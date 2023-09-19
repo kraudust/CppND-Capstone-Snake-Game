@@ -15,9 +15,9 @@ class Game {
   int GetSize() const;
 
  private:
-  Snake snake1;
-  Snake snake2;
-  std::vector<Snake> snake_vec_;
+  Snake snake1_;
+  Snake snake2_;
+  std::vector<Snake*> snake_vec_;
   SDL_Point food;
 
   std::random_device dev;

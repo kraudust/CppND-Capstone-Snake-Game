@@ -59,7 +59,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake1, Snake const snake2, SDL_Point const &food) {
+void Renderer::Render(std::vector<Snake*> snakes, SDL_Point const &food) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -74,37 +74,34 @@ void Renderer::Render(Snake const snake1, Snake const snake2, SDL_Point const &f
   block.y = food.y * block.h;
   SDL_RenderFillRect(sdl_renderer, &block);
 
-  // Render snake's body
+  // Render snake's body(s)
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-  for (SDL_Point const &point : snake1.body) {
-    block.x = point.x * block.w;
-    block.y = point.y * block.h;
-    SDL_RenderFillRect(sdl_renderer, &block);
-  }
-  for (SDL_Point const &point : snake2.body) {
-    block.x = point.x * block.w;
-    block.y = point.y * block.h;
-    SDL_RenderFillRect(sdl_renderer, &block);
+  for (Snake* snake : snakes) {
+    for (SDL_Point const &point : snake->body) {
+      block.x = point.x * block.w;
+      block.y = point.y * block.h;
+      SDL_RenderFillRect(sdl_renderer, &block);
+    }
   }
 
-  // Render snake's head
-  block.x = static_cast<int>(snake1.head_x) * block.w;
-  block.y = static_cast<int>(snake1.head_y) * block.h;
-  if (snake1.alive) {
-    SDL_SetRenderDrawColor(sdl_renderer, 0, 122, 204, 255);
-  } else {
-    SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
+  // Render snake's head(s)
+  bool first_snake = true;
+  for (Snake* snake : snakes) {
+    block.x = static_cast<int>(snake->head_x) * block.w;
+    block.y = static_cast<int>(snake->head_y) * block.h;
+    if (snake->alive) {
+      if (first_snake) {
+        SDL_SetRenderDrawColor(sdl_renderer, 0, 122, 204, 255);
+        first_snake = false;
+      } else {
+        SDL_SetRenderDrawColor(sdl_renderer, 0, 204, 122, 255);
+      }
+      
+    } else {
+      SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
+    }
+    SDL_RenderFillRect(sdl_renderer, &block);
   }
-  SDL_RenderFillRect(sdl_renderer, &block);
-  block.x = static_cast<int>(snake2.head_x) * block.w;
-  block.y = static_cast<int>(snake2.head_y) * block.h;
-  if (snake2.alive) {
-    SDL_SetRenderDrawColor(sdl_renderer, 0, 204, 122, 255);
-  } else {
-    SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
-  }
-  SDL_RenderFillRect(sdl_renderer, &block);
-  SDL_RenderFillRect(sdl_renderer, &block);
 
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
