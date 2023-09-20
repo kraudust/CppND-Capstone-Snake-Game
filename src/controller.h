@@ -5,7 +5,7 @@
 
 class Controller {
  public:
-  void HandleInput(bool& running, std::vector<Snake*> snakes) const;
+  void HandleInput(bool& running, std::vector<Snake*>& snakes) const;
   void SelectPlayerCount(bool& one_player, bool& num_players_picked) const;
 
  private:

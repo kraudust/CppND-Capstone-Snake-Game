@@ -12,7 +12,7 @@ void Controller::ChangeDirection(Snake* snake, Snake::Direction input,
   return;
 }
 
-void Controller::HandleInput(bool& running, std::vector<Snake*> snakes) const {
+void Controller::HandleInput(bool& running, std::vector<Snake*>& snakes) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
