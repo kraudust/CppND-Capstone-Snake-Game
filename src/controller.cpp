@@ -20,53 +20,51 @@ void Controller::HandleInput(bool& running, std::vector<Snake*> snakes) const {
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.sym) {
         case SDLK_UP:
-          ChangeDirection(snakes[0], Snake::Direction::kUp,
-                          Snake::Direction::kDown);
+          ChangeDirection(snakes[0], Snake::Direction::kUp, Snake::Direction::kDown);
           break;
 
         case SDLK_DOWN:
-          ChangeDirection(snakes[0], Snake::Direction::kDown,
-                          Snake::Direction::kUp);
+          ChangeDirection(snakes[0], Snake::Direction::kDown, Snake::Direction::kUp);
           break;
 
         case SDLK_LEFT:
-          ChangeDirection(snakes[0], Snake::Direction::kLeft,
-                          Snake::Direction::kRight);
+          ChangeDirection(snakes[0], Snake::Direction::kLeft, Snake::Direction::kRight);
           break;
 
         case SDLK_RIGHT:
-          ChangeDirection(snakes[0], Snake::Direction::kRight,
-                          Snake::Direction::kLeft);
+          ChangeDirection(snakes[0], Snake::Direction::kRight, Snake::Direction::kLeft);
           break;
 
         // Add controls for an optional second snake
-        if (snakes.size() == 2) {
-          case SDLK_w:
-            ChangeDirection(snakes[1], Snake::Direction::kUp,
-                            Snake::Direction::kDown);
-            break;
+        case SDLK_w:
+          if (snakes.size() == 2) {
+            ChangeDirection(snakes[1], Snake::Direction::kUp, Snake::Direction::kDown);
+          }
+          break;
 
-          case SDLK_s:
-            ChangeDirection(snakes[1], Snake::Direction::kDown,
-                            Snake::Direction::kUp);
-            break;
+        case SDLK_s:
+          if (snakes.size() == 2) {
+          ChangeDirection(snakes[1], Snake::Direction::kDown, Snake::Direction::kUp);
+          }
+          break;
 
-          case SDLK_a:
-            ChangeDirection(snakes[1], Snake::Direction::kLeft,
-                            Snake::Direction::kRight);
-            break;
+        case SDLK_a:
+          if (snakes.size() == 2) {
+            ChangeDirection(snakes[1], Snake::Direction::kLeft, Snake::Direction::kRight);
+          }
+          break;
 
-          case SDLK_d:
-            ChangeDirection(snakes[1], Snake::Direction::kRight,
-                            Snake::Direction::kLeft);
-            break;
-        }
+        case SDLK_d:
+          if (snakes.size() == 2) {
+            ChangeDirection(snakes[1], Snake::Direction::kRight, Snake::Direction::kLeft);
+          }
+          break;
       }
     }
   }
 }
 
-void Controller::selectPlayerCount(bool& one_player, bool& num_players_picked) const
+void Controller::SelectPlayerCount(bool& one_player, bool& num_players_picked) const
 {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {

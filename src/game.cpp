@@ -21,19 +21,12 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, Controller* controll
   while (!num_players_picked) {
     frame_start = SDL_GetTicks();
 
-    controller_->selectPlayerCount(one_player_, num_players_picked);
-    renderer_->renderPlayerSelectMenu(one_player_);
+    controller_->SelectPlayerCount(one_player_, num_players_picked);
+    renderer_->RenderPlayerSelectMenu(one_player_);
 
     frame_end = SDL_GetTicks();
     frame_count++;
     frame_duration = frame_end - frame_start;
-
-    // After every second, update the window title.
-    if (frame_end - title_timestamp >= 1000) {
-      renderer_->UpdateWindowTitle(score, frame_count);
-      frame_count = 0;
-      title_timestamp = frame_end;
-    }
 
     // If the time for this frame is too small (i.e. frame_duration is
     // smaller than the target ms_per_frame), delay the loop to
@@ -70,7 +63,7 @@ void Game::Run() {
 
     // After every second, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer_->UpdateWindowTitle(score, frame_count);
+      renderer_->UpdateWindowTitle(snake_vec_, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -121,7 +114,6 @@ void Game::Update() {
     int new_y = static_cast<int>(snake->head_y);
 
     if (food.x == new_x && food.y == new_y) {
-      score++;
       PlaceFood();
       // Grow snake and increase speed.
       snake->GrowBody();
@@ -130,5 +122,11 @@ void Game::Update() {
   }
 }
 
-int Game::GetScore() const { return score; } // TODO:
-int Game::GetSize() const { return snake_vec_[0]->size; } //TODO:
+void Game::PrintScore()
+{
+  std::cout << "Blue player score:  " << snake_vec_[0]->size - 1 << std::endl;
+  if (!one_player_) {
+    std::cout << "Green player score: " << snake_vec_[1]->size - 1 << std::endl;
+  }
+}
+

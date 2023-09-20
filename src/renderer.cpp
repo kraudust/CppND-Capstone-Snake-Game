@@ -36,22 +36,18 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
 
-  // TODO: Customize -------------------------------------------------------
-  auto font = std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)>
-          (TTF_OpenFont("../roboto/Roboto-Bold.ttf", 25), TTF_CloseFont);
+  TTF_Font* font = TTF_OpenFont("../roboto/Roboto-Bold.ttf", 25);
 
   if(font == nullptr){
-    std::cerr << "Font was not found.\n";
-    exit(EXIT_FAILURE);
+    std::cerr << "Font not loaded properly.\n";
+    exit(0);
   }
 
-  // Render text
-  SDL_Color color = { 255, 255, 255 };
+  SDL_Color font_color = { 255, 255, 255 }; // White
   players_menu_.OnePlayer(SDL_CreateTextureFromSurface(
-          sdl_renderer, TTF_RenderText_Solid(font.get(),"One Player", color)));
+          sdl_renderer, TTF_RenderText_Solid(font,"One Player", font_color)));
   players_menu_.TwoPlayer(SDL_CreateTextureFromSurface(
-          sdl_renderer, TTF_RenderText_Solid(font.get(),"Two Player", color)));
-  // End TODO: Customize -------------------------------------------------------
+          sdl_renderer, TTF_RenderText_Solid(font,"Two Player", font_color)));
 }
 
 Renderer::~Renderer() {
@@ -75,8 +71,15 @@ void Renderer::Render(std::vector<Snake*> snakes, SDL_Point const &food) {
   SDL_RenderFillRect(sdl_renderer, &block);
 
   // Render snake's body(s)
+  bool first_snake = true;
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
   for (Snake* snake : snakes) {
+    if (first_snake) {
+      SDL_SetRenderDrawColor(sdl_renderer, 0, 150, 255, 255);
+      first_snake = false;
+    } else {
+      SDL_SetRenderDrawColor(sdl_renderer, 0, 255, 150, 255);
+    }
     for (SDL_Point const &point : snake->body) {
       block.x = point.x * block.w;
       block.y = point.y * block.h;
@@ -85,16 +88,16 @@ void Renderer::Render(std::vector<Snake*> snakes, SDL_Point const &food) {
   }
 
   // Render snake's head(s)
-  bool first_snake = true;
+  first_snake = true;
   for (Snake* snake : snakes) {
     block.x = static_cast<int>(snake->head_x) * block.w;
     block.y = static_cast<int>(snake->head_y) * block.h;
     if (snake->alive) {
       if (first_snake) {
-        SDL_SetRenderDrawColor(sdl_renderer, 0, 122, 204, 255);
+        SDL_SetRenderDrawColor(sdl_renderer, 0, 50, 255, 255);
         first_snake = false;
       } else {
-        SDL_SetRenderDrawColor(sdl_renderer, 0, 204, 122, 255);
+        SDL_SetRenderDrawColor(sdl_renderer, 0, 255, 0, 255);
       }
       
     } else {
@@ -107,58 +110,64 @@ void Renderer::Render(std::vector<Snake*> snakes, SDL_Point const &food) {
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
+void Renderer::UpdateWindowTitle(std::vector<Snake*>& snakes, int fps)
+{
+  std::string title;
+  if (snakes.size() == 1) {
+    int score = snakes[0]->size - 1;
+    title = ("Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps));
+  } else {
+    int blue_score = snakes[0]->size - 1;
+    int green_score = snakes[1]->size - 1;
+    title = (
+      "Blue Score: " + std::to_string(blue_score) +
+      " - Green Score: " + std::to_string(green_score) + " FPS: " + std::to_string(fps));
+  }
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }
 
-void Renderer::renderPlayerSelectMenu(const bool& one_player){
-  // TODO: Customize -------------------------------------------------------
+void Renderer::RenderPlayerSelectMenu(const bool& one_player){
   // Clear screen
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
   SDL_RenderClear(sdl_renderer);
 
-  SDL_Rect message_rect_1;
-  SDL_Rect message_rect_2;
+  // Set up rectangles to hold the player font textures
+  SDL_Rect one_player_rect;
+  SDL_Rect two_player_rect;
+  one_player_rect.x = screen_width / 4;
+  one_player_rect.y = screen_height / 2 - screen_height / 10;
+  one_player_rect.w = screen_width / 2;
+  one_player_rect.h = screen_height / 10;
+  two_player_rect.x = screen_width / 4;
+  two_player_rect.y = screen_height / 2 + screen_height / 10;
+  two_player_rect.w = screen_width / 2;
+  two_player_rect.h = screen_height / 10;
 
-  message_rect_1.x = 180;
-  message_rect_1.y = 370;
-  message_rect_1.w = 300;
-  message_rect_1.h = 70;
+  // Copy the player font textures to the renderer
+  SDL_RenderCopy(sdl_renderer, players_menu_.OnePlayer(), NULL, &one_player_rect);
+  SDL_RenderCopy(sdl_renderer, players_menu_.TwoPlayer(), NULL, &two_player_rect);
 
-  message_rect_2.x = 180;
-  message_rect_2.y = 435;
-  message_rect_2.w = 300;
-  message_rect_2.h = 70;
+  // Make blocks that hover on the two menu options
+  SDL_Rect select_p_one_block;
+  select_p_one_block.w = 30;
+  select_p_one_block.h = 30;  
+  select_p_one_block.x = screen_width / 4 - select_p_one_block.w;
+  select_p_one_block.y = screen_height / 2 - screen_height / 10 + select_p_one_block.h / 2;
+  SDL_Rect select_p_two_block;
+  select_p_two_block.x = screen_width / 4 - select_p_one_block.w;;
+  select_p_two_block.y = screen_height / 2 + screen_height / 10  + select_p_one_block.h / 2;
+  select_p_two_block.w = 30;
+  select_p_two_block.h = 30;
 
-  // Update Screen
-  if(SDL_RenderCopy(sdl_renderer, players_menu_.OnePlayer(), NULL, &message_rect_1) < 0)
-    std::cerr << "SDL_RenderCopy ERROR.\n";
+  // Switch between rendering the two menu option blocks as the user arrows between them
+  SDL_SetRenderDrawColor(sdl_renderer, 255, 0, 0, 255);
+  if(one_player) {
+    SDL_RenderFillRect(sdl_renderer, &select_p_one_block);
+  } else {
+    SDL_RenderFillRect(sdl_renderer, &select_p_two_block);
+  }
 
-  if(SDL_RenderCopy(sdl_renderer, players_menu_.TwoPlayer(), NULL, &message_rect_2) < 0)
-    std::cerr << "SDL_RenderCopy ERROR.\n";
-
-  SDL_Rect block_1;
-  block_1.w = 50;
-  block_1.h = 50;
-
-  block_1.x = 110;
-  block_1.y = 380;
-
-  SDL_Rect block_2;
-  block_2.w = 50;
-  block_2.h = 50;
-
-  block_2.x = 110;
-  block_2.y = 445;
-
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
-  if(one_player)
-    SDL_RenderFillRect(sdl_renderer, &block_1);
-  else
-    SDL_RenderFillRect(sdl_renderer, &block_2);
-
+  // Update screen
   SDL_RenderPresent(sdl_renderer);
-  // End TODO: Customize -------------------------------------------------------
 }
 
