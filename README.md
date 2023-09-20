@@ -36,11 +36,11 @@ This is my capstone project for the Udacity C++ Nanodegree. I have chosen to ext
 ## Rubric Points Completed
 **Required Points**:
 
-	- `README with instructions is included` -> this is the readme
-	- `README indicated which project is chosen` -> My readme indicates the snake project was chosen and describes gameplay at the top of this README
-		- In terms of code structure, the original structure of the repo is the same as the original snake game with one additional class (PlayersMenu) which is used by the renderer class to render the select number of players menu before game play begins.
-	- `README indicates which rubric points are addressed` -> See Below
-	- `The submission must compile and run` -> See the Basic Build Instructions above to build and run the project
+- `README with instructions is included` -> this is the readme
+- `README indicated which project is chosen` -> My readme indicates the snake project was chosen and describes gameplay at the top of this README
+	- In terms of code structure, the original structure of the repo is the same as the original snake game with one additional class (PlayersMenu) which is used by the renderer class to render the select number of players menu before game play begins.
+- `README indicates which rubric points are addressed` -> See Below
+- `The submission must compile and run` -> See the Basic Build Instructions above to build and run the project
 
 
 **5+ Rubric points addressed by my project**:
