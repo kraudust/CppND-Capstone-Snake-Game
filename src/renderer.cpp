@@ -110,7 +110,7 @@ void Renderer::Render(std::vector<Snake*> snakes, SDL_Point const &food) {
   SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(std::vector<Snake*>& snakes, int fps)
+void Renderer::UpdateWindowTitle(std::vector<Snake*>& snakes, int fps, int two_p_time_left)
 {
   std::string title;
   if (snakes.size() == 1) {
@@ -120,8 +120,8 @@ void Renderer::UpdateWindowTitle(std::vector<Snake*>& snakes, int fps)
     int blue_score = snakes[0]->size - 1;
     int green_score = snakes[1]->size - 1;
     title = (
-      "Blue Score: " + std::to_string(blue_score) +
-      " - Green Score: " + std::to_string(green_score) + " FPS: " + std::to_string(fps));
+      "Time Left: " + std::to_string(two_p_time_left) + " - Blue Score: " + std::to_string(blue_score) +
+      " - Green Score: " + std::to_string(green_score) + " - FPS: " + std::to_string(fps));
   }
   SDL_SetWindowTitle(sdl_window, title.c_str());
 }

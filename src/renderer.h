@@ -15,7 +15,7 @@ class Renderer {
   ~Renderer();
 
   void Render(std::vector<Snake*> snakes, SDL_Point const &food);
-  void UpdateWindowTitle(std::vector<Snake*>& snakes, int fps);
+  void UpdateWindowTitle(std::vector<Snake*>& snakes, int fps, int two_p_time_left);
   void RenderPlayerSelectMenu(const bool& running);
 
  private:

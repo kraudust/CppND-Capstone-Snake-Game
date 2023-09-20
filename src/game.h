@@ -25,11 +25,13 @@ class Game {
 
   void PlaceFood();
   void Update();
-
-  Uint32 title_timestamp;
-  Uint32 frame_start;
-  Uint32 frame_end;
-  Uint32 frame_duration;
+  int title_timestamp;
+  int frame_start;
+  int frame_end;
+  int frame_duration;
+  int game_start;
+  int two_p_game_duration;
+  int game_runtime;
   int frame_count{0};
   Controller* controller_;
   Renderer* renderer_;

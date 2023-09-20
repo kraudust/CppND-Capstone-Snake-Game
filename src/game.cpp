@@ -45,25 +45,36 @@ Game::Game(std::size_t grid_width, std::size_t grid_height, Controller* controll
 
 void Game::Run() {
   bool running = true;
-
+  game_start = SDL_GetTicks();
+  two_p_game_duration = 1000 * 120; // 2 minute game
+  int time_left;
   while (running) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
     controller_->HandleInput(running, snake_vec_);
-    Update();
+    if (game_runtime < two_p_game_duration && !one_player_) {
+      Update();
+    } else if (one_player_) {
+      Update();
+    }
     renderer_->Render(snake_vec_, food);
 
     frame_end = SDL_GetTicks();
 
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
+    // Keep track of how long each loop through the input/update/render cycle takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
+    game_runtime = frame_end - game_start;
 
     // After every second, update the window title.
+    time_left = (two_p_game_duration - game_runtime) / 1000;
     if (frame_end - title_timestamp >= 1000) {
-      renderer_->UpdateWindowTitle(snake_vec_, frame_count);
+      if (game_runtime > two_p_game_duration) {
+        renderer_->UpdateWindowTitle(snake_vec_, frame_count, 0);
+      } else {
+        renderer_->UpdateWindowTitle(snake_vec_, frame_count, time_left);
+      }
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -127,6 +138,13 @@ void Game::PrintScore()
   std::cout << "Blue player score:  " << snake_vec_[0]->size - 1 << std::endl;
   if (!one_player_) {
     std::cout << "Green player score: " << snake_vec_[1]->size - 1 << std::endl;
+    if (snake_vec_[1]->size > snake_vec_[0]->size) {
+      std::cout << "GREEN PLAYER WINS!" << std::endl;
+    } else if (snake_vec_[1]->size < snake_vec_[0]->size) {
+      std::cout << "BLUE PLAYER WINS!" << std::endl;
+    } else {
+      std::cout << "YOU TIED!" << std::endl;
+    }
   }
 }
 
