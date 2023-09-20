@@ -35,11 +35,14 @@ This is my capstone project for the Udacity C++ Nanodegree. I have chosen to ext
 
 ## Rubric Points Completed
 **Required Points**:
+
 	- `README with instructions is included` -> this is the readme
 	- `README indicated which project is chosen` -> My readme indicates the snake project was chosen and describes gameplay at the top of this README
 		- In terms of code structure, the original structure of the repo is the same as the original snake game with one additional class (PlayersMenu) which is used by the renderer class to render the select number of players menu before game play begins.
 	- `README indicates which rubric points are addressed` -> See Below
 	- `The submission must compile and run` -> See the Basic Build Instructions above to build and run the project
+
+
 **5+ Rubric points addressed by my project**:
 1. `The project demonstrates an understanding of C++ functions and control structures` -> In `game.h`, I created a vector of snakes on line 18. Then in `game.cpp` on lines 39-40 I populate the vector with either one or two snakes based on the user input. I then adjusted the inputs to the `HandleInput`, `Render`, and `UpdateWindowTitle` functions to take the new vector as an input. Then I loop over the vector to perform the various tasks. One example of this is in `renderer.cpp` on line 76 when I use a range based for loop to iterate over the vector.
 2. `The project accepts user input and processes the input` -> In `Game.cpp` lines 21-42, I created a loop which calls a couple new functions I created to process user input (selecting a 1 or 2 player game). These functions are `SelectPlayerCount` on lines 67-90 of `controller.cpp` and `RenderPlayerSelectMenu` on lines 129-172 of renderer.cpp. These functions handle the player inputs to the startup menu and then render that startup menu.
